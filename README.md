@@ -1,4 +1,4 @@
-# interleave_paired_fastq
+# interleave_fastq
 This is a bash script that interleaves separated pair-ended FASTQ files. I works with `awk` internally.
 
 
