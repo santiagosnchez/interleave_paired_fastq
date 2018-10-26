@@ -1,5 +1,6 @@
 # interleave_paired_fastq
-Interleaves separated pair-ended FASTQ files
+This is a bash script that interleaves separated pair-ended FASTQ files. I works with `awk` internally.
+
 
     chmod +x interleave_fastq
     ./interleave_fastq -h
