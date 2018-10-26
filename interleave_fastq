@@ -1,0 +1,53 @@
+#!/bin/bash
+
+if [[ "$1" == "-h" ]]; then
+    echo "interleave_fastq [-h] filename.1.fq[.gz] filename.2.fq[.gz]"
+    exit 0
+elif [ -z $1 ]; then
+    echo "interleave_fastq [-h] filename.1.fq[.gz] filename.2.fq[.gz]"
+    exit 1
+fi
+
+if [[ $1 =~ \.gz$ ]]; then
+zcat $1 | awk -v second=$2 '
+{
+if (NR % 4 == 1){
+    file1 = $0;
+    if ("zcat "second | getline ){
+        file2 = $0;
+    }
+} else if (NR %4 == 0){
+    file1 = file1"\n"$0; 
+    print file1; 
+    if ("zcat "second | getline ){ 
+        file2 = file2"\n"$0; 
+        print file2;
+    }
+} else { 
+    file1 = file1"\n"$0; 
+    if ("zcat "second | getline ){ 
+        file2 = file2"\n"$0; 
+    }
+}}' | gzip
+else
+awk -v second=$2 '
+{
+if (NR % 4 == 1){
+    file1 = $0;
+    if (getline < second){
+        file2 = $0;
+    }
+} else if (NR %4 == 0){
+    file1 = file1"\n"$0; 
+    print file1; 
+    if (getline < second){ 
+        file2 = file2"\n"$0; 
+        print file2;
+    }
+} else { 
+    file1 = file1"\n"$0; 
+    if (getline < second){ 
+        file2 = file2"\n"$0; 
+    }
+}}' $1
+fi
